@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.IUserDao">  
+
+
+
+	<select id="getUser" parameterType="String" resultType="pojo.User" >
+        select * from userinfo where 1 = 1 
+	       	<if test ="userName != null and userName != ''">
+	       		AND userName = #{userName} 
+	       	</if>
+	       	<if test ="userId != null and userId != ''">
+	       		AND userId = #{userId} 
+	       	</if>
+	       	<if test ="status != null and status != ''">
+	       		AND status = #{status} 
+	       	</if>
+	       	ORDER BY id DESC
+    </select>
+    
+    <select id="getMenu" parameterType="String" resultType="vo.UserMenuVo" >
+        SELECT uo.* ,u.id userId,u.userName,u.realName from userinfo u  
+		INNER JOIN user_role ur on u.id = ur.userId 
+		INNER JOIN role_oper ro on ro.roleId = ur.roleId 
+		INNER JOIN user_opertion uo on uo.id = ro.operId where 1=1 
+	       	<if test ="status != null and status != ''">
+	       		AND uo.status = #{status}
+	       	</if>
+	       	<if test ="userId != null and userId != ''">
+	       		AND u.id = #{userId}
+	       	</if>
+	       	<if test ="type != null and type != ''">
+	       		AND uo.type = #{type} 
+	       	</if>
+	       	<if test ="parentName != null and parentName != ''">
+	       		AND uo.parentName = #{parentName}
+	       	</if>
+	       	ORDER BY uo.orderNum ASC
+    </select>
+
+	<select id="getRole" resultType="pojo.Role" >  
+        select r.* from role r INNER JOIN user_role ur on ur.roleId = r.id where 1 = 1 
+	       	<if test ="status != null and status != ''">
+	       		AND r.status = #{status} 
+	       	</if>
+	       	<if test ="id != null and id != ''">
+	       		AND r.id = #{id} 
+	       	</if>
+	       	<if test ="userId != null and userId != ''">
+	       		AND ur.userId = #{userId} 
+	       	</if>
+	       	ORDER BY id DESC
+    </select>
+    
+    <select id="getRoles" resultType="pojo.Role" >  
+        select * from role r where 1 = 1 
+	       	<if test ="status != null and status != ''">
+	       		AND status = #{status} 
+	       	</if>
+	       	<if test ="id != null and id != ''">
+	       		AND id = #{id} 
+	       	</if>
+	       	ORDER BY id DESC
+    </select>
+    
+    
+    <insert id="saveUserRole" parameterType="pojo.UserRole">
+        insert into user_role 
+        	(userId,roleId) values (#{userRole.userId}, #{userRole.roleId})
+    </insert>
+    
+    <delete id="deleteUserRole" parameterType="java.lang.Integer">
+        delete from user_role where userId = #{userId}
+    </delete>
+
+    <!-- <select id="getUsers"  parameterType="vo.UserTableVo" resultType="pojo.UserTable" >
+        select * from usertable where 1=1 
+	       	<if test ="id != null">
+	       		id = #{id}
+	       	</if>
+	       	
+	       	<if test ="userPhone != null and userPhone !=''">
+	       		AND userPhone = #{userPhone}
+	       	</if>
+	       	
+	       	<if test="creatTime != null and creatTime !=''">
+	       		<![CDATA[ and creatTime  >=  #{creatTime}  ]]>
+			</if>
+			
+			<if test="endTime != null and endTime !=''">
+	       		<![CDATA[ and creatTime  <=  #{endTime}  ]]>
+			</if>
+			
+			ORDER BY creatTime DESC
+    </select> -->
+    
+    <!-- <select id="getUserByPhone" parameterType="String" resultType="pojo.UserTable" >  
+        select * from usertable
+        <where>
+	       	<if test ="userPhone != null">
+	       		userPhone = #{userPhone}
+	       	</if>
+	      </where>
+    </select> -->
+    
+    <!--  <delete id="deleteOrder" parameterType="String">  
+        delete from `order` 
+        	where orderCode = #{orderCode}  
+    </delete> -->
+    
+    <!-- <insert id="saveUser" parameterType="pojo.UserTable">  
+    insert into usertable (userName,userPhone,userPassWord,sourceUrl,sourceType,pageType,accessType) value 
+        	(#{userTable.userName},#{userTable.userPhone},#{userTable.userPassWord},#{userTable.sourceUrl},#{userTable.sourceType},#{userTable.pageType},#{userTable.accessType}) 
+   	</insert> -->
+    
+   
+   <!--  <insert id="createUser" parameterType="com.csst.ebtMall.entity.EBTUser">  
+        insert into user  
+        	(userName,password,city,province,cellPhone,createDate,accountType) 
+        	values  
+        	(#{userName}, #{password},#{city},#{province},#{cellPhone},#{createDate},#{accountType})  
+    </insert>  -->
+  
+</mapper>  

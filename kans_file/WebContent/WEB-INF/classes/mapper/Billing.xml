@@ -1,0 +1,1041 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.IBillingDao"> 
+<resultMap type="pojo.Billing" id="doBilling">
+<result column="id" property="id" jdbcType="INTEGER" />
+<result  column="spart" property="spart" jdbcType="VARCHAR"/>
+<result  column="kunag" property="kunag" jdbcType="VARCHAR"/>
+<result  column="sort1" property="sort1" jdbcType="VARCHAR"/>
+<result  column="arktx" property="arktx" jdbcType="VARCHAR"/>
+<result  column="bukrs" property="bukrs" jdbcType="VARCHAR"/>
+<result  column="taxde" property="taxde" jdbcType="DOUBLE"/>
+<result  column="fkimg" property="fkimg" jdbcType="VARCHAR"/>
+<result  column="ghj" property="ghj" jdbcType="DOUBLE"/>
+<result  column="jsj" property="jsj" jdbcType="DOUBLE"/>
+<result  column="cbj" property="cbj" jdbcType="DOUBLE"/>
+<result  column="hszj" property="hszj" jdbcType="DOUBLE"/>
+</resultMap>
+<sql id="request" >
+<if test="timebegin != null and timeend != null">
+  and FKDAT between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if> 
+<!--  and  VBELN = #{VBELN,jdbcType=VARCHAR}  SAP发票号 -->
+<if test="VBELN != null and  VBELN!='' " >
+ and VBELN =  '${VBELN}'
+<!--  and VBELN in concat(concat('(', replace(${VBELN},', )), ')')  -->
+<!--  and  VBELN like concat(concat('%', '${VBELN}'), '%')  -->
+</if>
+<!--物料号  -->
+<if test="MATNR != null and MATNR != ''">
+  and MATNR =  '${MATNR}'
+</if>
+<!--  销售组织-->
+<if test="VKORG != null and VKORG != ''">
+   and VKORG =  '${VKORG}'
+
+</if>
+<!--  分销渠道 -->
+<if test="VTWEG != null and  VTWEG != ''">
+ and  VTWEG in ('${VTWEG}')  
+</if>
+<!-- 品牌 -->
+<if test="SPART != null and SPART != ''">
+ and  SPART in  ('${SPART}')
+</if>
+<!-- 售达方 -->
+<if test="KUNAG != null and KUNAG != ''">
+ and  KUNAG = '${KUNAG}' 
+</if>
+<!-- 付款方 -->
+<if test="KUNRG != null and KUNRG != ''">
+ and  ltrim(KUNRG,'0') in (${KUNRG}) 
+</if>
+</sql>
+
+<select id="getBillings"  parameterType="domain.RequestObject" resultMap="doBilling">
+select id,vbeln,posnr,fkart,fkart_t,vgbel,aubel,vkorg,vkorg_t,vtweg,vtweg_t,spart,spart_t,vkbur,
+vkbur_t,fkdat,kunag,name1,sort1,kunrg,name2,matnr,unistr(REPLACE(arktx,'\u','\')) as arktx,fkimg,vrkme,hsdj,hszj,btaux,taxde,cpudt,cputm,
+ghj,jsj,cbj,bukrs
+ from  et_001 where 1=1 and isbill = 0 and iscancelbill = 1 and kpstatus = 0
+<include refid="request"></include>
+</select> 
+<resultMap type="pojo.Billing" id="offBilling">
+<result column="id" property="id" jdbcType="INTEGER" />
+<result  column="vbeln" property="vbeln" jdbcType="VARCHAR"/>
+<result  column="posnr" property="posnr" jdbcType="VARCHAR"/>
+<result  column="fkart" property="fkart" jdbcType="VARCHAR"/>
+<result  column="fkart_t" property="fkart_t" jdbcType="VARCHAR"/>
+<result  column="vgbel" property="vgbel" jdbcType="VARCHAR"/>
+<result  column="aubel" property="aubel" jdbcType="VARCHAR"/>
+<!-- <result  column="auart" property="auart" jdbcType="VARCHAR"/> -->
+<result  column="vkorg" property="vkorg" jdbcType="VARCHAR"/>
+<result  column="vkorg_t" property="vkorg_t" jdbcType="VARCHAR"/>
+<result  column="vtweg" property="vtweg" jdbcType="VARCHAR"/>
+<result  column="vtweg_t" property="vtweg_t" jdbcType="VARCHAR"/>
+<result  column="spart" property="spart" jdbcType="VARCHAR"/>
+<result  column="spart_t" property="spart_t" jdbcType="VARCHAR"/>
+<result  column="vkbur" property="vkbur" jdbcType="VARCHAR"/>
+<result  column="vtweg_t" property="vtweg_t" jdbcType="VARCHAR"/>
+<result  column="spart" property="spart" jdbcType="VARCHAR"/>
+<result  column="vkbur" property="vkbur" jdbcType="VARCHAR"/>
+<result  column="vkbur_t" property="vkbur_t" jdbcType="VARCHAR"/>
+<result  column="fkdat" property="fkdat" jdbcType="VARCHAR"/>
+<result  column="kunag" property="kunag" jdbcType="VARCHAR"/>
+<result  column="name1" property="name1" jdbcType="VARCHAR"/>
+<result  column="sort1" property="sort1" jdbcType="VARCHAR"/>
+<result  column="kunrg" property="kunrg" jdbcType="VARCHAR"/>
+<result  column="name2" property="name2" jdbcType="VARCHAR"/>
+<result  column="matnr" property="matnr" jdbcType="VARCHAR"/>
+<result  column="arktx" property="arktx" jdbcType="VARCHAR"/>
+<result  column="fkimg" property="fkimg" jdbcType="VARCHAR"/>
+<result  column="vrkme" property="vrkme" jdbcType="VARCHAR"/>
+<result  column="hsdj" property="hsdj" jdbcType="DOUBLE"/>
+<result  column="hszj" property="hszj" jdbcType="DOUBLE"/>
+<result  column="btaux" property="btaux" jdbcType="DOUBLE"/>
+<result  column="taxde" property="taxde" jdbcType="DOUBLE"/>
+<result  column="cpudt" property="cpudt" jdbcType="TIMESTAMP"/>
+<result  column="cputm" property="cputm" jdbcType="VARCHAR"/>
+<result  column="ghj" property="ghj" jdbcType="DOUBLE"/>
+<result  column="jsj" property="jsj" jdbcType="DOUBLE"/>
+<result  column="cbj" property="cbj" jdbcType="DOUBLE"/>
+<result  column="bukrs" property="bukrs" jdbcType="VARCHAR"/>
+<result  column="normt" property="normt" jdbcType="VARCHAR"/>
+<result  column="payingnum" property="payingnum" jdbcType="VARCHAR"/>
+<result  column="address" property="address" jdbcType="VARCHAR"/>
+<result  column="newbank" property="newbank" jdbcType="VARCHAR"/>
+<result  column="bilingtype" property="bilingtype" jdbcType="VARCHAR"/>
+<result  column="vitureinvoce" property="vitureinvoce" jdbcType="VARCHAR"/>
+<result  column="merge_time" property="merge_time" jdbcType="VARCHAR"/>
+</resultMap>
+
+<!-- isbill  0为导入初始状态  1  为 et002的数据  iscancelbill 1 为正常  2 为取消   kpstatus 0为初始状态 1 为已开票 -->
+<!-- <select id="getOffBillings"  parameterType="domain.RequestObject"  resultMap="offBilling">
+select id,vbeln,posnr,fkart,fkart_t,vgbel,aubel,vkorg,vkorg_t,vtweg,vtweg_t,spart,spart_t,vkbur,
+vkbur_t,fkdat,kunag,name1,sort1,kunrg,name2,matnr,unistr(REPLACE(arktx,'\u','\')) as arktx,fkimg,vrkme,hsdj,hszj,btaux,taxde,cpudt,cputm,
+ghj,jsj,cbj,bukrs
+ from  et_001 where 1=1 
+<include refid="request"></include>
+and isbill =  0  and iscancelbill = 1 and kpstatus = 0 and kunrg not in (select case when sum(hszj) &lt;= 0 then kunrg else '1' end as kunrg from et_001 
+where 1=1 and isbill =0  and kpstatus = 0 and auditstatus = 0  and iscancelbill = 1 <include refid="request"></include> group by kunrg )
+</select> -->
+<select id="getOffBillings"  parameterType="domain.RequestObject"  resultMap="offBilling">
+select id,vbeln,posnr,fkart,fkart_t,vgbel,aubel,vkorg,vkorg_t,vtweg,vtweg_t,spart,spart_t,vkbur,
+vkbur_t,fkdat,kunag,name1,sort1,kunrg,name2,matnr,unistr(REPLACE(arktx,'\u','\')) as arktx,fkimg,vrkme,hsdj,hszj,btaux,taxde,cpudt,cputm,
+ghj,jsj,cbj,bukrs
+ from  et_001 where 1=1 
+<include refid="request"></include>
+and isbill =  0  and iscancelbill = 1 and kpstatus = 0 and kunrg not in (${kunrgsStr})
+</select>
+<resultMap type="pojo.Billing" id="getBillingNoResult">
+  <result  column="vbeln" property="vbeln" jdbcType="VARCHAR"/>
+</resultMap>
+
+<!-- 查询出条件内含税总价小于等于0的付款方-->
+<select id="getNULLHSZJKunrgs"  parameterType="domain.RequestObject" resultType="String">
+select case when sum(hszj) &lt;= 0 then kunrg else '1' end as kunrg from et_001 
+where 1=1 and isbill =0  and kpstatus = 0 and auditstatus = 0  and iscancelbill = 1 <include refid="request"></include> group by kunrg
+</select>
+
+
+<!-- 获取单月份开票的数据  -->
+<select id="getoffBillingsMounth"  parameterType="domain.RequestObject"  resultMap="offBilling">
+select id,vbeln,posnr,fkart,fkart_t,vgbel,aubel,vkorg,vkorg_t,vtweg,vtweg_t,spart,spart_t,vkbur,
+vkbur_t,fkdat,kunag,name1,sort1,kunrg,name2,matnr,unistr(REPLACE(arktx,'\u','\')) as arktx,fkimg,vrkme,hsdj,hszj,btaux,taxde,cpudt,cputm,
+ghj,jsj,cbj,bukrs
+ from  et_001 where 1=1 
+<if test="timebegin != null and timebegin != '' and timeend != null and timeend != ''">
+  and FKDAT between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if>
+<if test="cpudt != null and cpudt != ''">
+  and CPUDT &lt;= to_date('${cpudt}','YYYY-MM-DD')
+</if> 
+<!--  销售组织-->
+<if test="VKORG != null and VKORG != ''">
+   and VKORG =  '${VKORG}'
+</if>
+<!--  分销渠道 -->
+<if test="VTWEG != null and  VTWEG != ''">
+ and  VTWEG in ('${VTWEG}')  
+</if>
+<!-- 品牌 -->
+<if test="SPART != null and SPART != ''">
+ and  SPART in  ('${SPART}')
+</if>
+and kpstatus = 0  and isbill = 0  and auditstatus = 0 and iscancelbill = 1
+</select>
+
+<!-- 获取已开票未审核的数据  -->
+<select id="getBillingsKpNotSh"  parameterType="domain.RequestObject"  resultMap="offBilling">
+select id,vbeln,posnr,fkart,fkart_t,vgbel,aubel,vkorg,vkorg_t,vtweg,vtweg_t,spart,spart_t,vkbur,
+vkbur_t,fkdat,kunag,name1,sort1,kunrg,name2,matnr,unistr(REPLACE(arktx,'\u','\')) as arktx,fkimg,vrkme,hsdj,hszj,btaux,taxde,cpudt,cputm,
+ghj,jsj,cbj,bukrs,normt,vitureinvoce,merge_time
+ from  et_001 where 1=1 
+<if test="timebegin != null and timebegin != '' and timeend != null and timeend != ''">
+  and merge_time between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if>
+<!--  销售组织-->
+<if test="VKORG != null and VKORG != ''">
+   and VKORG =  '${VKORG}'
+</if>
+<!--  分销渠道 -->
+<if test="VTWEG != null and  VTWEG != ''">
+ and  VTWEG in (${VTWEG})  
+</if>
+<!-- 品牌 -->
+<if test="SPART != null and SPART != ''">
+ and  SPART in  (${SPART})
+</if>
+   and kpstatus = 1
+   and isbill = 0
+   and auditstatus = 0
+   and iscancelbill = 1
+</select>
+
+
+<!-- 获取未冲销组织信息  -->
+<select id="getUnOrgBilling"  parameterType="domain.RequestObject" resultMap="offBilling" >
+select id,vbeln,posnr,fkart,fkart_t,vgbel,aubel,vkorg,vkorg_t,vtweg,vtweg_t,spart,spart_t,vkbur,
+vkbur_t,fkdat,kunag,name1,sort1,kunrg,name2,matnr,unistr(REPLACE(arktx,'\u','\')) as arktx,fkimg,vrkme,hsdj,hszj,btaux,taxde,cpudt,cputm,
+ghj,jsj,cbj,bukrs
+ from  et_001 where 1=1 
+<include refid="request"></include>
+and isbill =  1  and iscancelbill = 1 and kpstatus = 0  and auditstatus = 0
+</select>
+
+<!-- 反倒金税发票 -->
+<insert id="insertGoldVoince" parameterType="java.util.List">
+<!-- insert into ET_001_GOLD(ID,VITUREINVOCE,VITUREINVOCEGOLD,CREATER,CREATETIME) values -->
+  <foreach collection="list" item="item" index="index" separator="," >  
+           update  Et_001_Merge_NO set BILLINGNOGOLD ='${item.VITUREINVOCEGOLD}',UPDATETER = '${item.CREATER}',CREATETIME= to_date('${item.CREATETIME}','yyyy-MM-dd') where BILLINGNO = '${item.VITUREINVOCE}'
+  </foreach>  
+</insert>
+
+
+<select id="getBillingNos" parameterType="domain.RequestObject" resultType="java.lang.String" >
+   select distinct  trim(VBELN) from et_001 where kpstatus = 1 and   isbill =  0  and iscancelbill = 1   and  CPUDT  between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</select>
+
+<select id="getCancelBillingNos" parameterType="domain.RequestObject" resultType="java.lang.String" >
+   select distinct  trim(VBELN) from et_001 where (isbill =  1  or iscancelbill = 2)  and  CPUDT  between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</select>
+
+<delete id="deleteByCpudt" parameterType="domain.RequestObject" >
+ delete from  et_001 where  KPSTATUS = 0 and   isbill =  0  and iscancelbill = 1 and  CPUDT  between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD') and BUKRS = '${companyCode}' and VBELN not in ('${VBELN}')
+</delete>
+<insert id="insertSapImport" parameterType="domain.RequestObject">
+insert into sapimport(ID,COMPANYCODE,BEGIN,End) values(sq_sapimport.nextval,#{companyCode},#{StartTime},#{EndTime})
+</insert>
+<delete id ="deleteSapImport">
+delete from SAPIMPORT
+</delete>
+<resultMap type="pojo.SapImportPojo" id="selectSapImportMap">
+  <result column="id" property="id" jdbcType="INTEGER" />
+  <result  column="companycode" property="companycode" jdbcType="VARCHAR"/>
+  <result  column="begin" property="begin" jdbcType="TIMESTAMP"/>
+  <result  column="end" property="end" jdbcType="TIMESTAMP"/>
+</resultMap>
+<select id="selectSapImport" resultMap="selectSapImportMap" >
+  select id,COMPANYCODE,BEGIN,End from  sapimport 
+</select>
+<!-- 插入ET001 的数据 -->
+<insert id="insertEt_001" parameterType="domain.ET_001"  >
+insert into et_001(ID,VBELN,POSNR,FKART,FKART_T,VGBEL,AUBEL,AUART,VKORG,
+VKORG_T,VTWEG,SPART,SPART_T,VKBUR,VKBUR_T,FKDAT,KUNAG,NAME1,SORT1,KUNRG,NAME2,MATNR,ARKTX,FKIMG,VRKME,
+HSDJ,HSZJ,ABRVW,BEZEI,BTAUX,TAXDE,CPUDT,CPUTM,GHJ,JSJ,CBJ,PRDHA,BUKRS,NORMT,isbill,iscancelbill,VTWEG_T)  
+values(sq_et_001.nextval,#{vbeln},#{posnr},#{fkart},#{fkart_t},#{vgbel},#{aubel},#{auart},#{vkorg},#{vkorg_t},
+#{vtweg},#{spart},#{spart_t},#{vkbur},#{vkbur_t},#{fkdat},#{kunag},#{name1},#{sort1},#{kunrg},#{name2},#{matnr},
+#{arktx},#{fkimg},#{vrkme},#{hsdj},#{hszj},#{abrvw},#{bezei},#{btaux},#{taxde},#{cpudt},#{cputm},
+#{ghj},#{jsj},#{cbj},#{prdha},#{bukrs},#{normt},0,1,#{vtweg_t})
+ </insert>
+ <!--删除ET002 的数据  -->
+<delete id="deleteByCpudtTwo" parameterType="domain.RequestObject" >
+ delete from  et_002 where   CPUDT between #{StartTime} and #{EndTime}
+</delete>
+<insert id="insertEt_002" parameterType="domain.ET_002" >
+insert into et_002(ID,VBELN,CPUDT,CPUTM) values(sq_et_002.nextval,#{VBELN},#{CPUDT},#{CPUTM})
+</insert>
+<!-- 根据et002 的数据 确定 et001 里面有哪些不能用的 -->
+<update id="upetByBillNo" >
+update  et_001 set isbill = 1 where VBELN in (select distinct(VBELN) from et_002)
+</update>
+<!-- 更新订单状态  是否隐藏 iscancelbill 1 正常 2 隐藏 -->
+<update id="updatebillingstatus"  parameterType="domain.RequestObject">
+update  et_001 set iscancelbill = 2  where id = #{id} 
+</update>
+<!-- 批量更新订单状态  是否隐藏 iscancelbill 1 正常 2 隐藏 -->
+<update id="batchupdatebillingstatus"  parameterType="domain.RequestObject">
+update  et_001 set iscancelbill = 2  where id in
+<foreach collection="idArray" index="index" item="item" open="(" separator="," close=")">
+	#{item}
+</foreach>
+</update>
+<!--查询品牌品牌类型-->
+<select id="selectSpart" resultMap="offBilling">
+select distinct Spart,spart_t from et_001 order by Spart
+</select>
+
+<!--合并开票  -->
+<!-- <select id="mergeBillings"  parameterType="domain.RequestObject">
+select  KUNRG,NAME2,MATNR,ARKTX,sum(FKIMG) as FKIMG from et_001 where VKORG =6201 and ID in  ('${mergeid}')  group by KUNRG,NAME2,MATNR,GHJ,ARKTX 
+</select> -->
+
+<!-- 更新et_001发票状态为已开票  并且生成发票号码  开票人  开发票时间 -->
+<!--  -->
+<update id="mergeBillings"  parameterType="domain.RequestObject">
+update et_001 set KPSTATUS = 1,VITUREINVOCE = '${VITUREINVOCE}',MERGE_PEOPLE='${MERGE_PEOPLE}',MERGE_TIME =  to_date('${MERGE_TIME}','yyyy-MM-dd')  where ID in ('${mergeid}') 
+</update>
+<!-- 更新Et_001的数据  更改审核人 -->
+
+<!-- 批量插入客户信息 -->
+<insert id = "insertCustomer" parameterType="pojo.Customer" >
+insert into ET_001_MERGE(ID,VKORG,SPART,KUNRG,NAME2,COMNAME,PAYINGNUM,ADDRESS,BANK,BANKNUM,BILLINGADDRESS,PHONE,PEOPLE,BILLINGTYPE,CREATE_TIME,CREATER) values
+  (sq_et_001_merge.nextval,trim('${VKORG}'),trim('${SPART}'),trim('${KUNRG}'),trim('${NAME2}'),trim('${COMNAME}'),trim('${PAYINGNUM}'),trim('${ADDRESS}'),trim('${BANK}'),trim('${BANKNUM}'),trim('${BILLINGADDRESS}'),trim('${PHONE}'),trim('${PEOPLE}'),trim('${BILLINGTYPE}'),to_date('${CREATE_TIME}','yyyy-MM-dd'),'${CREATER}')   
+ 
+</insert>
+
+
+
+
+
+<sql id="getMergedbillingrequest" >
+<if test="timebegin != null and timeend != null">
+  and a.MERGE_TIME between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if> 
+<!--  and  VBELN = #{VBELN,jdbcType=VARCHAR} -->
+<if test="VITUREINVOCE != null and VITUREINVOCE!='' " >
+ a.VITUREINVOCE =  '${VITUREINVOCE}'
+<!--  and VBELN in concat(concat('(', replace(${VBELN},', )), ')')  -->
+<!--  and  VBELN like concat(concat('%', '${VBELN}'), '%')  -->
+</if>
+<if test="VKORG != null and VKORG != ''">
+   and a.VKORG =  '${VKORG}'
+</if>
+<if test="VTWEG != null and  VTWEG != ''">
+ and  a.VTWEG in ('${VTWEG}')  
+</if>
+<if test="SPART != null and SPART != ''">
+ and  a.SPART in  ('${SPART}')
+</if>
+<if test="KUNAG != null and KUNAG != ''">
+ and  a.KUNAG = '${KUNAG}' 
+</if>
+<if test="KUNRG != null and KUNRG != ''">
+ and  a.KUNRG = '${KUNRG}' 
+</if>
+</sql>
+
+<sql id="getMergedbillingrequestforfilter" >
+<if test="timebegin != null and timeend != null">
+  and d.MERGE_TIME between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if> 
+<if test="VKORG != null and VKORG != ''">
+   and d.VKORG =  '${VKORG}'
+</if>
+<if test="VTWEG != null and  VTWEG != ''">
+ and  d.VTWEG in  ('${VTWEG}')  
+</if>
+<if test="SPART != null and SPART != ''">
+ and  d.SPART in  ('${SPART}')
+</if>
+</sql>
+<!--  金税发票的MAP-->
+<resultMap type="pojo.GoldVirtureInvoice" id="goldmap">
+<result    column="VITUREINVOCE" property="VITUREINVOCE"  jdbcType="VARCHAR" />
+<result    column="VITUREINVOCEGOLD" property="VITUREINVOCEGOLD"  jdbcType="VARCHAR" />
+</resultMap>
+
+<!--开票信息的MAP  -->
+<resultMap type="pojo.MergeBilling" id="getMergedbillingrequestMap">
+<result column="VITUREINVOCE" property="VITUREINVOCE"  jdbcType="VARCHAR"/>
+<result column="zdzkje" property="zdzkje"  jdbcType="NUMERIC"/>
+<result column="MERGE_TIME" property="MERGE_TIME"  jdbcType="TIMESTAMP"/>
+<collection property="lists" resultMap="offBilling"></collection>
+<collection property="goldlists" resultMap="goldmap"></collection>
+</resultMap>
+<!-- 查询开票信息 -->
+<!-- 新增加了条件 -->
+<select id="searchMergeBilling"  parameterType="domain.RequestObject" resultMap="getMergedbillingrequestMap">
+select a.id,a.vbeln,a.posnr,a.fkart,a.fkart_t,a.vgbel,a.aubel,a.vkorg,a.vkorg_t,a.vtweg,a.vtweg_t,
+a.spart,a.spart_t,a.vkbur,a.vkbur_t,a.fkdat,a.kunag,a.name1,a.sort1,a.kunrg,a.name2,a.matnr,
+unistr(REPLACE(a.arktx,'\u','\')) as arktx,a.fkimg,a.vrkme,a.hsdj,a.hszj,a.btaux,a.taxde,a.cpudt,a.cputm,a.ghj,
+<!-- case when a.ghj == 0 then a.cbj *1.8 else a.ghj end as ghj, -->
+<!-- case when a.ghj ==0 then sum(a.cbj*1.8*a.fkimg) else 0.0 end as zdzkje, -->
+a.jsj,a.cbj,a.bukrs,a.VITUREINVOCE,a.MERGE_TIME,a.normt,
+b.payingnum,b.address,concat(b.bank,b.banknum) as newbank ,b.billingtype
+ from  et_001 a left join et_001_merge b  on a.kunrg =b.kunrg where 1=1 
+<include refid="getMergedbillingrequest"></include>
+and a.isbill =  0  and a.iscancelbill = 1 and a.kpstatus = 1  and a.AUDITSTATUS = 0  and
+ a.kunrg not in (select case when sum(hszj)  &lt; = 0 then kunrg else '1' end as kunrg from et_001 d 
+where 1=1    and isbill =0  and kpstatus = 0      and iscancelbill = 1<include refid="getMergedbillingrequestforfilter"></include> group by d.kunrg )
+
+</select>
+
+
+<!-- 查询开票审核的信息 -->
+<sql id="getMergedbillingrequestaudit" >
+<if test="timebegin != null and timeend != null">
+  and MERGE_TIME between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if> 
+<!--  and  VBELN = #{VBELN,jdbcType=VARCHAR} -->
+<if test="VITUREINVOCE != null and VITUREINVOCE!='' " >
+ VITUREINVOCE =  '${VITUREINVOCE}'
+<!--  and VBELN in concat(concat('(', replace(${VBELN},', )), ')')  -->
+<!--  and  VBELN like concat(concat('%', '${VBELN}'), '%')  -->
+</if>
+<if test="VKORG != null and VKORG != ''">
+ and VKORG in  ('${VKORG}')
+</if>
+<if test="VTWEG != null and  VTWEG != ''">
+ and  VTWEG in ('${VTWEG}')  
+</if>
+<if test="SPART != null and SPART != ''">
+ and  SPART in  ('${SPART}')
+</if>
+<if test="KUNAG != null and KUNAG != ''">
+ and  KUNAG = '${KUNAG}' 
+</if>
+<if test="KUNRG != null and KUNRG != ''">
+ and  KUNRG = '${KUNRG}' 
+</if>
+</sql>
+
+<!-- 查询开票审核的信息 -->
+<sql id="getMergedbillingrequestauditgb" >
+<if test="timebegin != null and timeend != null">
+  and a.AUDITOR_TIME between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if> 
+<!--  and  VBELN = #{VBELN,jdbcType=VARCHAR} -->
+<if test="VITUREINVOCE != null and VITUREINVOCE!='' " >
+ a.VITUREINVOCE =  '${VITUREINVOCE}'
+<!--  and VBELN in concat(concat('(', replace(${VBELN},', )), ')')  -->
+<!--  and  VBELN like concat(concat('%', '${VBELN}'), '%')  -->
+</if>
+<if test="VKORG != null and VKORG != ''">
+ and a.VKORG =  '${VKORG}'
+</if>
+<if test="VTWEG != null and  VTWEG != ''">
+ and  a.VTWEG in ('${VTWEG}')  
+</if>
+<if test="SPART != null and SPART != ''">
+ and  a.SPART in  ('${SPART}')
+</if>
+<if test="KUNAG != null and KUNAG != ''">
+ and  a.KUNAG = '${KUNAG}' 
+</if>
+<if test="KUNRG != null and KUNRG != ''">
+ and  ltrim(a.KUNRG,'0') in (${KUNRG}) 
+</if>
+</sql>
+<select id="searchMergeBillingAudit"  parameterType="domain.RequestObject" resultMap="getMergedbillingrequestMap">
+select a.id,a.vbeln,a.posnr,a.fkart,a.fkart_t,a.vgbel,a.aubel,a.vkorg,a.vkorg_t,a.vtweg,a.vtweg_t,
+a.spart,a.spart_t,a.vkbur,a.vkbur_t,a.fkdat,a.kunag,a.name1,a.sort1,a.kunrg,a.name2,a.matnr,
+unistr(REPLACE(a.arktx,'\u','\')) as arktx,a.fkimg,a.vrkme,a.hsdj,a.hszj,a.btaux,a.taxde,a.cpudt,a.cputm,a.ghj,
+<!-- case when a.ghj == 0 then a.cbj *1.8 else a.ghj end as ghj, -->
+<!-- case when a.ghj ==0 then sum(a.cbj*1.8*a.fkimg) else 0.0 end as zdzkje, -->
+a.jsj,a.cbj,a.bukrs,a.VITUREINVOCE,a.MERGE_TIME,a.normt,
+b.payingnum,b.address,concat(b.bank,b.banknum) as newbank ,'增票' as bilingtype,c.VITUREINVOCEGOLD
+ from  et_001 a left join et_001_merge b  on a.kunrg =b.kunrg left join et_001_gold c on a.VITUREINVOCE =c.VITUREINVOCE where 1=1 
+<include refid="getMergedbillingrequestauditgb"></include>
+and a.isbill =  0  and a.iscancelbill = 1 and a.kpstatus = 1 and a.AUDITSTATUS = 1
+</select>
+<!-- 更新ET_001 -->
+<sql id="updateet001byid" >
+<if test="SPART != null and SPART != ''">
+  SPART =  '${SPART}'
+</if>
+<if test="ARKTX != null and ARKTX != ''">
+ , ARKTX = '${ARKTX}'
+</if>
+<if test="BUKRS != null and BUKRS != ''">
+  , BUKRS =  '${BUKRS}'
+</if>
+<if test="TAXDE != null and TAXDE != ''">
+ ,  TAXDE =  '${TAXDE}'
+</if>
+<if test="FKIMG != null and FKIMG != ''">
+ ,  FKIMG =  '${FKIMG}'
+</if>
+<if test="GHJ != null and GHJ != ''">
+ ,  GHJ =  '${GHJ}'
+</if>
+<if test="JSJ != null and JSJ != ''">
+ ,  JSJ =  '${JSJ}'
+</if>
+<if test="CBJ != null and CBJ != ''">
+ , CBJ = '${CBJ}'
+</if>
+<if test="HSDJ != null and HSDJ != ''">
+ ,  HSDJ = '${HSDJ}'
+</if>
+<if test="HSZJ != null and HSZJ != ''">
+ ,  HSZJ =  '${HSZJ}'
+</if>
+<if test="UPDATETER != null and UPDATETER != ''">
+ ,  UPDATETER = '${UPDATETER}'
+</if>
+<if test="UPDATETIME != null and UPDATETIME != ''">
+ ,  UPDATETIME = to_date('${UPDATETIME}','YYYY-MM-DD')
+</if>
+<if test="AUDITOR != null and AUDITOR != ''">
+ ,  AUDITOR = '${AUDITOR}'
+</if>
+<if test="AUDITOR_TIME != null and AUDITOR_TIME != ''">
+ ,  AUDITOR_TIME = to_date('${AUDITOR_TIME}','YYYY-MM-DD')
+</if>
+</sql>
+<update id="SaveUpdateByid" parameterType="pojo.UpdateEtFirst">
+update et_001 set <include refid="updateet001byid"></include> where id= '${ID}'
+</update>
+<!-- 审核发票 -->
+<update id="SaveupdateByVitureinvoce" parameterType="pojo.UpdateEtFirst">
+update et_001 set AUDITSTATUS = 1,AUDITOR = '${AUDITOR}',AUDITOR_TIME = to_date('${AUDITOR_TIME}','yyyy-MM-dd') where VITUREINVOCE = '${VITUREINCOCE}' and KUNRG = '${KUNRG}'  and KPSTATUS = 1
+</update>
+<!-- 回滚发票  1.根据发票号查询出发票ID 2.根据ID回滚发票 -->
+<select id="selectidbyvitureinvoce"  resultMap="offBilling" parameterType="pojo.UpdateEtFirst">
+  select id from et_001 where  VITUREINVOCE in ('${vitureinvocegroup}')
+</select>
+<update id="rollbackbyid" parameterType="pojo.UpdateEtFirst">
+<!-- update et_001 set kpstatus = 0 where id in ('${idgroup}') -->
+ update et_001 set kpstatus = 0 where  VITUREINVOCE = '${VITUREINCOCE}' and KUNRG = '${KUNRG}'  and  AUDITSTATUS=0
+</update>
+<!--回滚审核发票  根据ID回滚审核发票-->
+<update id="rollbackbyidaudit" parameterType="pojo.UpdateEtFirst">
+update et_001 set AUDITSTATUS = 0 where  VITUREINVOCE in ('${vitureinvocegroup}')
+<!-- update et_001 set AUDITSTATUS = 0 where id in ('${idgroup}') -->
+</update>
+
+<!-- 根据付款方查询公司 -->
+<resultMap type="pojo.Customer" id="searchcustomsMap">
+<result column="id" property="id" />
+<result column="VKORG" property="VKORG" />
+<result column="SPART" property="SPART" />
+<result column="KUNRG" property="KUNRG" />
+<result column="NAME2" property="NAME2" />
+<result column="COMNAME" property="COMNAME" />
+<result column="PAYINGNUM" property="PAYINGNUM" />
+<result column="PAYINGNAME" property="PAYINGNAME" />
+<result column="ADDRESS" property="ADDRESS" />
+<result column="BANK" property="BANK" />
+<result column="BANKNUM" property="BANKNUM" />
+<result column="BILLINGADDRESS" property="BILLINGADDRESS" />
+<result column="PHONE" property="PHONE" />
+<result column="PEOPLE" property="PEOPLE" />
+<result column="BILLINGTYPE" property="BILLINGTYPE" />
+<result column="AUDITSTATUS" property="AUDITSTATUS" />
+</resultMap>
+<select id="searchcustoms" parameterType="pojo.Customer" resultMap="searchcustomsMap">
+select id,VKORG,SPART,KUNRG,NAME2,COMNAME,PAYINGNUM,PAYINGNAME,ADDRESS,BANK,BANKNUM,BILLINGADDRESS,PHONE,PEOPLE,BILLINGTYPE,AUDITSTATUS from ET_001_MERGE where 1=1
+ <if test="KUNRG != null and KUNRG !=''">
+and KUNRG = '${KUNRG}'
+</if> 
+<if test="NAME2 != null and NAME2 !=''">
+and NAME2 like concat(concat('%','${NAME2}'),'%')
+</if>
+</select>
+
+<!-- 获取销售组织及描述 -->
+<resultMap type="pojo.OrgPojo" id="orgmap">
+ <result column="vkorg" property="vkorg" />
+  <result column="vkorg_t" property="vkorg_t" />
+</resultMap>
+<select id="searchOrgName" resultMap="orgmap">
+select distinct(vkorg),vkorg_t from et_001
+</select>
+<!-- 执行开票 -->
+<!--开票信息的MAP  -->
+<resultMap type="pojo.ExportBilling" id="getMergedbillingrequestMapExport">
+<result column="VKORG" property="VKORG"  jdbcType="VARCHAR"/>
+<result column="MERGE_TIME" property="MERGE_TIME"  jdbcType="TIMESTAMP"/>
+<collection property="lists" resultMap="exportBillingAudit"></collection>
+</resultMap>
+
+<resultMap type="pojo.ExportBillingAudit" id="exportBillingAudit">
+<result column="KUNRG" property="KUNRG"  jdbcType="VARCHAR"/>
+<result column="FKIMG" property="FKIMG"  jdbcType="VARCHAR"/>
+<result column="VRKME" property="VRKME"  jdbcType="VARCHAR"/>
+<result column="MATNR" property="MATNR"  jdbcType="VARCHAR"/>
+<result column="ARKTX" property="ARKTX"  jdbcType="VARCHAR"/>
+<result column="NORMT" property="NORMT"  jdbcType="VARCHAR"/>
+<result column="HSDJ" property="HSDJ"  jdbcType="VARCHAR"/>
+<result column="HSZJ" property="HSZJ"  jdbcType="VARCHAR"/>
+<result column="GHJ" property="GHJ"  jdbcType="VARCHAR"/>
+<result column="CBJ" property="CBJ"  jdbcType="VARCHAR"/>
+<result column="NAME2" property="NAME2"  jdbcType="VARCHAR"/>
+<result column="COMNAME" property="COMNAME"  jdbcType="VARCHAR"/>
+<result column="PAYINGNUM" property="PAYINGNUM"  jdbcType="VARCHAR"/>
+<result column="address" property="PAYINGNAME"  jdbcType="VARCHAR"/>
+<result column="BANK" property="BANK"  jdbcType="VARCHAR"/>
+<result column="BANKNUM" property="BANKNUM"  jdbcType="VARCHAR"/>
+<result column="BILLINGADDRESS" property="BILLINGADDRESS"  jdbcType="VARCHAR"/>
+<result column="PHONE" property="PHONE"  jdbcType="VARCHAR"/>
+<result column="PEOPLE" property="PEOPLE"  jdbcType="VARCHAR"/>
+<result column="BILLINGTYPE" property="BILLINGTYPE"  jdbcType="VARCHAR"/>
+ <result column="BILLINGNOGOLD" property="VITUREINVOCEGOLD"  jdbcType="VARCHAR"/> 
+<!-- <result column="BILLINGNO" property="BILLINGNO"  jdbcType="VARCHAR"/> -->
+<result column="BILLINGNO" property="VITUREINVOCE"  jdbcType="VARCHAR"/>
+<result column="VKORG" property="VKORG"  jdbcType="VARCHAR"/>
+<result column="SPART" property="SPART"  jdbcType="VARCHAR"/>
+</resultMap>
+
+<select id="searchMergeBillingAuditExport"  parameterType="domain.RequestObject" resultMap="getMergedbillingrequestMapExport">
+select  m.VITUREINVOCE,
+       m.KUNRG,
+       m.VKORG,
+       m.FKIMG,
+       m.VRKME,
+       m.MATNR,
+       unistr(REPLACE(m.ARKTX,'\u','\')) as ARKTX,
+       m.NORMT,
+       m.HSZJ,
+       m.CBJ,
+       m.MERGE_TIME,
+       m.NAME2,
+       m.Comname,
+       m.payingnum,
+       m.address,
+       m.bank,
+       m.banknum,
+       m.billingaddress,
+       m.phone,
+       m.people,
+       m.billingtype,
+       m.BILLINGNO,
+       m.BILLINGNOGOLD,
+       m.SPART,
+       m.HSDJ
+       from (
+select d.VITUREINVOCE,
+       d.KUNRG,
+       d.VKORG,
+       d.FKIMG,
+       d.VRKME,
+       d.MATNR,
+       d.ARKTX,
+       d.NORMT,
+       d.HSZJ,
+       d.CBJ,
+       d.MERGE_TIME,
+       d.SPART,
+       d.HSDJ,
+       b.NAME2,
+       b.Comname,
+       b.payingnum,
+       b.address,
+       b.bank,
+       b.banknum,
+       b.billingaddress,
+       b.phone,
+       b.people,
+       b.billingtype,
+<!--        c.VITUREINVOCEGOLD, -->
+       e.BILLINGNO,
+       e.BILLINGNOGOLD      
+  from (select a.VITUREINVOCE,
+       a.KUNRG,
+       a.VKORG,
+       a.MERGE_TIME,
+       SUM(a.FKIMG) as FKIMG,
+       a.VRKME,
+       a.MATNR,
+       a.ARKTX,
+       a.NORMT,
+       sum(a.HSZJ) as HSZJ,
+       a.CBJ,
+       a.SPART,
+       a.HSDJ
+  from (select VITUREINVOCE,
+               KUNRG,
+               VKORG,
+               MERGE_TIME,
+               FKIMG,
+               VRKME,
+               MATNR,
+               ARKTX,
+               NORMT,
+               HSZJ,
+               CBJ,
+               SPART,
+               case HSDJ
+                 when 0 then
+                  (case GHJ
+                    when 0 then
+                     CBJ * 1.8
+                    else
+                     GHJ
+                  end)
+                 else
+                  HSDJ
+               end as HSDJ
+          from et_001
+         where 1 = 1 <include refid="getMergedbillingrequestaudit"></include>
+           and isbill = 0 and iscancelbill = 1 and kpstatus = 1 and AUDITSTATUS = 0) a
+			 group by a.VITUREINVOCE,
+			          a.KUNRG,
+			          a.VKORG,
+			          a.MERGE_TIME,
+			          a.VRKME,
+			          a.MATNR,
+			          a.ARKTX,
+			          a.NORMT,
+			          a.SPART,
+			          a.HSDJ,
+			          a.cbj
+			) d  join Et_001_Merge_NO e on d.Vitureinvoce = e.Vitureinvoce and d.kunrg =e.kunrg 
+			  left join et_001_merge b on d.KUNRG = b.KUNRG  ) m  order BY <!-- m.KUNRG -->m.BILLINGNO
+</select>
+
+<!-- 更新客户数据 -->
+<update id="upcustomerbyid"  parameterType="pojo.Customer" >
+update et_001_merge set VKORG = '${VKORG}' 
+<if test="SPART != null and SPART != ''">
+, SPART ='${SPART}'
+</if>
+<if test="KUNRG != null and KUNRG != ''">
+, KUNRG ='${KUNRG}'
+</if>
+<if test="NAME2 != null and NAME2 != ''">
+, NAME2 ='${NAME2}'
+</if>
+<if test="COMNAME != null and COMNAME != ''">
+, COMNAME ='${COMNAME}'
+</if>
+<if test="PAYINGNUM != null and PAYINGNUM != ''">
+, PAYINGNUM ='${PAYINGNUM}'
+</if>
+<if test="ADDRESS != null and ADDRESS != ''">
+, ADDRESS ='${ADDRESS}'
+</if>
+<if test="BANK != null and BANK != ''">
+, BANK ='${BANK}'
+</if>
+<if test="BANKNUM != null and BANKNUM != ''">
+, BANKNUM ='${BANKNUM}'
+</if>
+<if test="BILLINGADDRESS != null and BILLINGADDRESS != ''">
+, BILLINGADDRESS ='${BILLINGADDRESS}'
+</if>
+<if test="PHONE != null and PHONE != ''">
+, PHONE ='${PHONE}'
+</if>
+<if test="PEOPLE != null and PEOPLE != ''">
+, PEOPLE ='${PEOPLE}'
+</if>
+<if test="BILLINGTYPE != null and BILLINGTYPE != ''">
+, BILLINGTYPE ='${BILLINGTYPE}'
+</if>
+<if test="UPDATER !=null and UPDATER !=''">
+,UPDATER='${UPDATER}'
+</if>
+<if test="UPDATE_TIME !=null and UPDATE_TIME !=''">
+,UPDATE_TIME= to_date('${UPDATE_TIME}','yyyy-MM-dd')
+</if>
+where id = '${id}'
+</update>
+<!-- 查询出所有的付款方号码 -->
+<select id="selectKunrgForInport" resultType="java.lang.String">
+select KUNRG from et_001_merge where  auditstatus = 1
+</select>
+<select id="selectKunrgForInportAudit" resultType="java.lang.String">
+select KUNRG from et_001_merge where auditstatus = 0
+</select>
+<!-- 查询出不能开票的付款方 -->
+<!-- <select id="">
+select case when sum(hszj)= 0 then trim(kunrg) end from et_001 
+where VKORG = 6401 and VTWEG = 10 and spart='06'   and  FKDAT between to_date('2017-05-01','YYYY-MM-DD')
+ and to_date('2017-05-31','YYYY-MM-DD') group by kunrg 
+</select> -->
+
+<!-- 根据开票号查询出所有的付款方 -->
+<select id="selectkunrgbyvitureinvoce"  parameterType="pojo.MergeBillingNo"  resultType="java.lang.String">
+select  distinct(KUNRG)  from  et_001 where VITUREINVOCE ='${VITUREINVOCE}'
+</select>
+<!-- 根据付款方生成发票号 -->
+<insert id="insertintoetmergeno" parameterType="pojo.MergeBillingNo" >
+insert into ET_001_MERGE_NO(ID,VITUREINVOCE,BILLINGNO,KUNRG,CREATER,CREATETIME) values(SQ_ET_001_MERGE_NO.nextval,trim('${VITUREINVOCE}'),trim('${BILLINGNO}'),trim('${KUNRG}'),trim('${CREATER}'),to_date('${CREATETIME}','yyyy-MM-dd HH24:mi:ss'))
+</insert>
+<!-- 导出金税发票 -->
+<!-- 审核的发票 -->
+<sql id="getMergedbillingrequestauditgg" >
+<if test="timebegin != null and timeend != null">
+  and a.AUDITOR_TIME between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if> 
+<!--  and  VBELN = #{VBELN,jdbcType=VARCHAR} -->
+<if test="VITUREINVOCE != null and VITUREINVOCE!='' " >
+ a.VITUREINVOCE =  '${VITUREINVOCE}'
+<!--  and VBELN in concat(concat('(', replace(${VBELN},', )), ')')  -->
+<!--  and  VBELN like concat(concat('%', '${VBELN}'), '%')  -->
+</if>
+<if test="VKORG != null and VKORG != ''">
+ and a.VKORG =  '${VKORG}'
+</if>
+<if test="VTWEG != null and  VTWEG != ''">
+ and  a.VTWEG in ('${VTWEG}')  
+</if>
+<if test="SPART != null and SPART != ''">
+ and  a.SPART in  ('${SPART}')
+</if>
+<if test="KUNAG != null and KUNAG != ''">
+ and  a.KUNAG = '${KUNAG}' 
+</if>
+<if test="KUNRG != null and KUNRG != ''">
+ and  a.KUNRG = '${KUNRG}' 
+</if>
+</sql>
+<select id="searchMergeBillingAuditExportgold"  parameterType="domain.RequestObject" resultMap="getMergedbillingrequestMapExport">
+select m.VITUREINVOCE,
+       m.KUNRG,
+       m.VKORG,
+       m.FKIMG,
+       m.VRKME,
+       m.MATNR,
+       unistr(REPLACE(m.ARKTX,'\u','\')) as ARKTX,
+       m.NORMT,
+       m.HSZJ,
+       m.GHJ,
+       m.CBJ,
+       m.HSDJ,
+       m.MERGE_TIME,
+       m.NAME2,
+       m.Comname,
+       m.payingnum,
+       m.address,
+       m.bank,
+       m.banknum,
+       m.billingaddress,
+       m.phone,
+       m.people,
+       m.billingtype,
+       m.BILLINGNO,
+       m.BILLINGNOGOLD
+       from (
+select d.VITUREINVOCE,
+       d.KUNRG,
+       d.VKORG,
+       d.FKIMG,
+       d.VRKME,
+       d.MATNR,
+       d.ARKTX,
+       d.NORMT,
+       d.HSZJ,
+       d.GHJ,
+       d.CBJ,
+       d.HSDJ,
+       d.MERGE_TIME,
+       b.NAME2,
+       b.Comname,
+       b.payingnum,
+       b.address,
+       b.bank,
+       b.banknum,
+       b.billingaddress,
+       b.phone,
+       b.people,
+       b.billingtype,
+<!--        c.VITUREINVOCEGOLD, -->
+       e.BILLINGNO,
+       e.BILLINGNOGOLD
+  from (select VITUREINVOCE,
+               KUNRG,
+               VKORG,
+               MERGE_TIME,
+               SUM(FKIMG) as FKIMG,
+               VRKME,
+               MATNR,
+               ARKTX,
+               NORMT,
+               sum(HSZJ) as HSZJ,
+               GHJ,
+               CBJ,
+               HSDJ
+          from et_001 a
+         where 1 = 1 <include refid="getMergedbillingrequestauditgg"></include>
+         and a.isbill =  0  and a.iscancelbill = 1 and a.kpstatus = 1  and a.AUDITSTATUS = 1 
+         group by VITUREINVOCE,
+                  KUNRG,
+                  VKORG,
+                  MERGE_TIME,
+                  VRKME,
+                  MATNR,
+                  ARKTX,
+                  NORMT,
+                  GHJ,
+                  CBJ,
+                  HSDJ) d   join Et_001_Merge_NO e on d.Vitureinvoce = e.Vitureinvoce and d.kunrg =e.kunrg 
+ left   join et_001_merge b on d.KUNRG = b.KUNRG ) m  order BY m.BILLINGNO
+</select>
+<!-- 回滚发票 用于单个回滚-->
+<resultMap type="pojo.MergePojoBase" id="requestforrollbacksqlmapparent">
+<result column="KUNRG" property="KUNRG"  jdbcType="VARCHAR"/>
+<result column="BILLINGNO" property="BILLINGNO"  jdbcType="VARCHAR"/>
+<result column="MERGE_TIME" property="MERGE_TIME"  jdbcType="VARCHAR"/>
+<result column="BILLINGBASE" property="BILLINGBASE"  jdbcType="VARCHAR"/>
+<collection  property="billings" resultMap="requestforrollbacksqlmapchild" ></collection>
+</resultMap>
+<resultMap type="pojo.Billing" id="requestforrollbacksqlmapchild">
+<result column="id" property="id"  jdbcType="VARCHAR"/>
+<result column="kunrg" property="kunrg"  jdbcType="VARCHAR"/>
+<result column="name2" property="name2"  jdbcType="VARCHAR"/>
+<result column="matnr" property="matnr"  jdbcType="VARCHAR"/>
+<result column="arktx" property="arktx"  jdbcType="VARCHAR"/>
+<result column="vkorg" property="vkorg"  jdbcType="VARCHAR"/>
+<result column="vtweg" property="vtweg"  jdbcType="VARCHAR"/>
+<result column="spart" property="spart"  jdbcType="VARCHAR"/>
+<result column="taxde" property="taxde"  jdbcType="VARCHAR"/>
+<result column="btaux" property="btaux"  jdbcType="VARCHAR"/>
+<result column="cbj" property="cbj"  jdbcType="VARCHAR"/>
+<result column="hsdj" property="hsdj"  jdbcType="VARCHAR"/>
+<result column="ghj" property="ghj"  jdbcType="VARCHAR"/>
+<result column="jsj" property="jsj"  jdbcType="VARCHAR"/>
+<result column="fkimg" property="fkimg"  jdbcType="VARCHAR"/>
+<result column="hszj" property="hszj"  jdbcType="VARCHAR"/>
+</resultMap>
+<sql id="requestforrollbacksql">
+<if test="VKORG != null and VKORG !=''">
+and  b.VKORG = '${VKORG}'
+</if>
+<if test="VTWEG !=null and VTWEG !=''">
+and   b.VTWEG in  ('${VTWEG}')  
+</if>
+<if test="KUNRG !=null and KUNRG !=''">
+and   ltrim(b.KUNRG,'0') in  (${KUNRG})  
+</if>
+<if test="SPART !=null and SPART !=''">
+and  b.SPART in('${SPART}')
+</if>
+<if test="IMPNUM !=null and IMPNUM !=''">
+and  a.Billingno in ('${IMPNUM}')
+</if>
+<if test="timebegin != null and timeend != null">
+and b.MERGE_TIME between to_date('${timebegin}','YYYY-MM-DD') and to_date('${timeend}','YYYY-MM-DD')
+</if> 
+</sql>
+<!-- 获取开票信息新的逻辑 -->
+<select id="getOffBillingsNewMerge"   parameterType="domain.RequestObject"  resultMap="requestforrollbacksqlmapparent"  >
+select b.id,a.Billingno,b.merge_time,b.kunrg,b.name2,b.MATNR,unistr(REPLACE(b.arktx,'\u','\')) as arktx,b.vkorg,b.vtweg,b.spart,b.TAXDE,b.btaux,b.cbj,b.hsdj,b.ghj,b.jsj,b.fkimg,b.hszj,b.VITUREINVOCE as BILLINGBASE from  et_001_merge_no a  left  join  et_001 b on a.Vitureinvoce =b.Vitureinvoce and a.Kunrg =b.kunrg 
+where 1=1 and isbill =0 and iscancelbill =1 and kpstatus=1 and auditstatus =0  <include refid="requestforrollbacksql"></include>
+</select>
+<!-- 删除付款方编码相同的客户 -->
+<delete id="deletecustomerbykunrg" parameterType="domain.RequestObject">
+delete from et_001_merge  where KUNRG = '${KUNRG}'
+</delete>
+<!-- 审核客户 -->
+<update id="auditcustomer" parameterType="domain.RequestObject"  >
+ update et_001_merge set AUDITSTATUS = 1,AUDITTIME = to_date('${timebegin}','yyyy-MM-dd HH24:mi:ss'),AUDITOR = '${AUDITOR}' where id = '${id}'
+</update>
+<!-- 根据日期查询出所有已开票数据 -->
+<resultMap type="pojo.BaseBilling" id="selectallbytimeexportexcelmap">
+<result column="ID" property="ID"  jdbcType="VARCHAR"/>
+<result column="VBELN" property="VBELN"  jdbcType="VARCHAR"/>
+<result column="POSNR" property="POSNR"  jdbcType="VARCHAR"/>
+<result column="FKART" property="FKART"  jdbcType="VARCHAR"/>
+<result column="FKART_T" property="FKART_T"  jdbcType="VARCHAR"/>
+<result column="VGBEL" property="VGBEL"  jdbcType="VARCHAR"/>
+<result column="AUBEL" property="AUBEL"  jdbcType="VARCHAR"/>
+<result column="VKORG" property="VKORG"  jdbcType="VARCHAR"/>
+<result column="VKORG_T" property="VKORG_T"  jdbcType="VARCHAR"/>
+<result column="VTWEG" property="VTWEG"  jdbcType="VARCHAR"/>
+<result column="VTWEG_T" property="VTWEG_T"  jdbcType="VARCHAR"/>
+<result column="SPART" property="SPART"  jdbcType="VARCHAR"/>
+<result column="SPART_T" property="SPART_T"  jdbcType="VARCHAR"/>
+<result column="VKBUR" property="VKBUR"  jdbcType="VARCHAR"/>
+<result column="VKBUR_T" property="VKBUR_T"  jdbcType="VARCHAR"/>
+<result column="FKDAT" property="FKDAT"  jdbcType="VARCHAR"/>
+<result column="KUNAG" property="KUNAG"  jdbcType="VARCHAR"/>
+<result column="NAME1" property="NAME1"  jdbcType="VARCHAR"/>
+<result column="SORT1" property="SORT1"  jdbcType="VARCHAR"/>
+<result column="KUNRG" property="KUNRG"  jdbcType="VARCHAR"/>
+<result column="NAME2" property="NAME2"  jdbcType="VARCHAR"/>
+<result column="MATNR" property="MATNR"  jdbcType="VARCHAR"/>
+<result column="ARKTX" property="ARKTX"  jdbcType="VARCHAR"/>
+<result column="FKIMG" property="FKIMG"  jdbcType="VARCHAR"/>
+<result column="VRKME" property="VRKME"  jdbcType="VARCHAR"/>
+<result column="HSDJ" property="HSDJ"  jdbcType="VARCHAR"/>
+<result column="HSZJ" property="HSZJ"  jdbcType="VARCHAR"/>
+<result column="ABRVW" property="ABRVW"  jdbcType="VARCHAR"/>
+<result column="BEZEI" property="BEZEI"  jdbcType="VARCHAR"/>
+<result column="BTAUX" property="BTAUX"  jdbcType="VARCHAR"/>
+<result column="TAXDE" property="TAXDE"  jdbcType="VARCHAR"/>
+<result column="GHJ" property="GHJ"  jdbcType="VARCHAR"/>
+<result column="JSJ" property="JSJ"  jdbcType="VARCHAR"/>
+<result column="CBJ" property="CBJ"  jdbcType="VARCHAR"/>
+<result column="BURKS" property="BURKS"  jdbcType="VARCHAR"/>
+<result column="NORMT" property="NORMT"  jdbcType="VARCHAR"/>
+<result column="VITUREINVOCE" property="VITUREINVOCE"  jdbcType="VARCHAR"/>
+<result column="AUDITOR_TIME" property="AUDITOR_TIME"  jdbcType="VARCHAR"/>
+</resultMap>
+<select id="selectallbytimeexportexcel" parameterType="domain.RequestObject" resultMap="selectallbytimeexportexcelmap">
+select ID,
+VBELN,POSNR,FKART,FKART_T,VGBEL,AUBEL,
+VKORG,VKORG_T,VTWEG,VTWEG_T,
+SPART,SPART_T,VKBUR,VKBUR_T,FKDAT,KUNAG,NAME1,SORT1,KUNRG,NAME2,MATNR,unistr(REPLACE(arktx,'\u','\')) as ARKTX,FKIMG,VRKME,
+HSDJ,HSZJ,ABRVW,BEZEI,BTAUX,
+TAXDE,
+GHJ,
+JSJ,
+CBJ
+from  et_001  where
+KPSTATUS =1 and
+isbill=0 and
+iscancelbill =1 and AUDITOR_TIME 
+BETWEEN to_date('${timebegin}','yyyy-MM-dd')
+and to_date('${timeend}','yyyy-MM-dd')  and auditstatus = 1
+</select>
+
+<select id="selectShNotFdExcel" parameterType="domain.RequestObject" resultMap="selectallbytimeexportexcelmap">
+select ID,
+VBELN,POSNR,FKART,FKART_T,VGBEL,AUBEL,
+VKORG,VKORG_T,VTWEG,VTWEG_T,
+SPART,SPART_T,VKBUR,VKBUR_T,FKDAT,KUNAG,NAME1,SORT1,KUNRG,NAME2,MATNR,unistr(REPLACE(arktx,'\u','\')) as ARKTX,FKIMG,VRKME,
+HSDJ,HSZJ,ABRVW,BEZEI,BTAUX,
+TAXDE,
+GHJ,
+JSJ,
+CBJ,
+bukrs,
+normt,
+vitureinvoce,
+auditor_time
+from  et_001  where
+KPSTATUS =1 
+and isbill=0
+and iscancelbill =1
+and auditstatus = 1
+and AUDITOR_TIME 
+<if test="timebegin !=null and timebegin !='' and timeend !=null and timeend !=''">
+	BETWEEN to_date('${timebegin}','yyyy-MM-dd')
+	and to_date('${timeend}','yyyy-MM-dd')
+</if>
+and vitureinvoce not in (select distinct(vitureinvoce) from et_001_merge_no where billingno in (select distinct(billingno) from et_001_merge_no_gold))
+</select>
+
+<!-- <select id="selectallnotmergebytimeexportexcel" parameterType="domain.RequestObject" resultMap="selectallbytimeexportexcelmap">
+select ID,
+VBELN,POSNR,FKART,FKART_T,VGBEL,AUBEL,
+VKORG,VKORG_T,VTWEG,VTWEG_T,
+SPART,SPART_T,VKBUR,VKBUR_T,FKDAT,KUNAG,NAME1,SORT1,KUNRG,NAME2,MATNR,ARKTX,FKIMG,VRKME,
+HSDJ,HSZJ,ABRVW,BEZEI,BTAUX,
+TAXDE,
+GHJ,
+JSJ,
+CBJ
+from  et_001  where
+KPSTATUS =0 and
+isbill=0 and
+iscancelbill =1 and FKDAT 
+BETWEEN to_date('${timebegin}','yyyy-MM-dd')
+and to_date('${timeend}','yyyy-MM-dd')  and auditstatus = 0
+</select>
+ -->
+ <!--反倒发票号新版  -->
+<insert id="insertGoldVoinceNew" parameterType="java.util.List">
+<!-- insert into ET_001_GOLD(ID,VITUREINVOCE,VITUREINVOCEGOLD,CREATER,CREATETIME) values -->
+  <foreach collection="list" item="item" index="index" separator="," >  
+         insert into ET_001_MERGE_NO_GOLD(ID,BILLINGNO,BILLINGNOGOLD,CREATER,CREATETIME) values(Sq_Et_001_Merge_No_Gold.nextval,'${item.VITUREINVOCE}','${item.VITUREINVOCEGOLD}','${item.CREATER}',to_date('${item.CREATETIME}','yyyy-MM-dd'))
+  </foreach>  
+</insert>
+
+<!--查询当天最新的billingno-->
+<select id="getLastBillingNO" parameterType="java.lang.String" resultType="java.lang.String">
+	select max(BILLINGNO) from et_001_merge_no where BILLINGNO like #{date}||'%'
+</select>
+</mapper>
